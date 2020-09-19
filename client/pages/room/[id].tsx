@@ -1,20 +1,35 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import socket from '@/socket'
 
 export default function SingleRoom(props: Props) {
+  const isBrowser = typeof window !== 'undefined'
+
+  useEffect(() => {
+    socket.on('user-connected', (userId: number) => {
+      console.log('userId :>> ', userId)
+    })
+
+    return () => socket.off('user-connected')
+  }, [])
+
   useEffect(() => {
     async function joinRoom() {
-      const userId: number = 1000
+      const Peer = (await import('peerjs')).default
+      const myPeer = new Peer(undefined, {
+        host: 'localhost',
+        port: 9000,
+        path: '/peerjs/app'
+      })
 
-      socket.emit('join-room', { roomId: props.roomId, userId })
-
-      socket.on('user-connected', (userId: number) => {
-        console.log('userId :>> ', userId)
+      myPeer.on('open', (id) => {
+        socket.emit('join-room', { roomId: props.roomId, userId: id })
       })
     }
 
     joinRoom()
-  }, [])
+  }, [isBrowser])
+
+  
 
   return (
     <div></div>
