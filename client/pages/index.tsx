@@ -1,26 +1,25 @@
-import React, { useEffect, useCallback } from 'react'
-import io from 'socket.io-client'
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/router'
+
 import * as apiService from '@services/api.service'
 
-export default function index() {
+export default function Home() {
+  const router = useRouter()
+
   useEffect(() => {
     async function emitRoom() {
-      const socket: SocketIOClient.Socket = io('localhost:9000')
-
-      const roomId: string = await getRoomId()
-      const userId: number = 1000
-
-      socket.emit('join-room', { roomId, userId })
+      try {
+        const roomId: string = await apiService.getRoomId()
+        router.replace(`/room/${roomId}`)      
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     emitRoom()
   }, [])
 
-  const getRoomId = useCallback(apiService.getRoomId, [])
-
   return (
-    <div>
-      Hello world!
-    </div>
+    <div />
   )
 }
