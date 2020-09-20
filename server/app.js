@@ -32,10 +32,13 @@ const peerServer = ExpressPeerServer(server, {
 app.use('/peerjs', peerServer);
 
 io.on('connection', socket => {
-  socket.on('join-room', ({ roomId, userId }) => {
-    console.log('userId :>> ', userId);
+  socket.on('join-room', ({roomId, userId}) => {
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
+
+    socket.on('disconnect', () => {
+      socket.to(roomId).broadcast.emit('user-disconnected', userId)
+    })
   })
 })
 
