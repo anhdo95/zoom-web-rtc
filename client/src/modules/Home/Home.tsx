@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useHistory } from 'react-router'
 
-import * as apiService from '@services/api.service'
+import * as apiService from 'services/api.service'
 
 export default function Home() {
-  const router = useRouter()
+  const history = useHistory()
 
   useEffect(() => {
     async function emitRoom() {
       try {
         const roomId: string = await apiService.getRoomId()
-        router.replace(`/room/${roomId}`)      
+        history.replace(`/room/${roomId}`)      
       } catch (error) {
         console.error(error)
       }

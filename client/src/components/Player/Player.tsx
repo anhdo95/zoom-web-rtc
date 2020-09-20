@@ -15,10 +15,9 @@ const initialState = {
   loop: false
 }
 
-const reducer = (state, action) => {
+const reducer = (state = initialState, action: { type: string, payload: any }) => {
   switch (action.type) {
     case 'PLAYING':
-      console.log('action.payload :>> ', action.payload);
       state.playing = action.payload
       // state.muted = !action.payload
     default:
@@ -28,7 +27,7 @@ const reducer = (state, action) => {
   return { ...state }
 }
 
-export default function Player(props) {
+export default function Player(props: Props) {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const handlePlay = () => {
@@ -60,4 +59,8 @@ export default function Player(props) {
       onEnded={handleEnded}
     />
   );
+}
+
+interface Props {
+  url: string | MediaStream
 }
